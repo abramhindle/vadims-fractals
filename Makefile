@@ -6,3 +6,9 @@
 
 live: 500.sco grains2.orc
 	csound -+rtaudio=jack -dm6 -B 4096 -odac grains2.orc 500.sco
+
+movie: 500.mov 500.wav
+	mplayer 500.mov --audiofile=500.wav
+
+play: 
+	mplayer 500.mov --audiofile=500.wav
