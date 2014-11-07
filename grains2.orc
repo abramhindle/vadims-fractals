@@ -30,11 +30,12 @@ itmp	ftgen 4, 0, 1024, 10, 1
 	ix = p4 - 250
 	iy = p5 - 250
 	iz = p6 - 250
-	iloc = iz + 500*(ix + 500*iy)
+	iloc = sqrt(ix * ix + iy * iy + iz * iz)
+	ilocmax = sqrt(250*250 + 250*250 + 250*250)
         ;ipitch = ((5.0 - 4.5*(p2/30.0)) / ($SIZE / 44100)) ; 16 1.352e-12 ; 2 is 2X 0.5 is 1/2
         ipitch = (1.0 / ($SIZE / 44100)) ; 16 1.352e-12 ; 2 is 2X 0.5 is 1/2
 	iTab = 101
-iphase  wrap iloc/(500*500*500), 0.0, 1.0
+iphase  wrap iloc/ilocmax, 0.0, 1.0
 	print iphase
 aenv    oscili iamp, 1/idur, 1        
 ; aa01     poscil iamp01, ipitch, 101, iphase
