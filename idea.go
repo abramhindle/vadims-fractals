@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"github.com/skelterjohn/go.matrix" 
 )
 
 type ScoEvent struct {
@@ -47,17 +48,43 @@ func Bounce(proto ScoEvent, reflectors []Reflector, model Model) []ScoEvent {
 	return score
 }
 
+
+
 func PrintScore(score []ScoEvent) {
 	for _, elm := range score {
 		elm.PrintSco()
 	}
 }
 
-func main() {
+func reflectorTest() {
 	s := ScoEvent{"\"sine\"", 0.0, 0.1, 1.0}
 	s.PrintSco()
 	reflectors := []Reflector{ Reflector{100.0,0.0}, Reflector{50.0,0.0}, Reflector{1000.0,0.0}, Reflector{1000.0,99.0}, Reflector{666,45.0} }
 	model := Model{ 0.9, 1, 300.0 }
 	score := Bounce(s,reflectors, model)
 	PrintScore(score)
+}
+
+func Bounce(proto ScoEvent, reflectors []Reflector, model Model) []ScoEvent {
+	now := proto.when
+	score := make([]ScoEvent, 0)
+	for _, reflector := range reflectors {
+		if ( reflector.Angle > -90.0 && reflector.Angle < 90.0) {
+			x := proto
+			x.loud = x.loud * (1.0 - math.Abs(reflector.Angle)/90.0) * (1 - model.Decay)
+			x.when = now + reflector.Distance / model.Speed
+			score = append(score, x)
+		}
+	}
+	return score
+}
+
+func main() {
+	m := matrix.MakeDenseMatrix([]float64{
+		0.0,   100.0, 300.0,
+		100.0,   0.0, 200.0,
+		300.0, 200.0,   0.0,
+	},3,3)
+	fmt.Print("%v",m)
+	
 }

@@ -19,3 +19,7 @@ play:
 
 5001:
 	mplayer 500.mov --audiofile=5001.wav
+
+sine:
+	go run idea.go >sine.sco
+	csound -o what.wav sine.orc sine.sco^C
