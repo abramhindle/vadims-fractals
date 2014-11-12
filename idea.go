@@ -65,7 +65,7 @@ func reflectorTest() {
 	PrintScore(score)
 }
 
-func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model) []ScoEvent {
+func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model, depth int) []ScoEvent {
 	now := proto.when
 	rows := m.Rows()
 	score := make([]ScoEvent, 0)
@@ -74,7 +74,11 @@ func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model) []Sc
 			x := proto
 			x.loud = x.loud * (1 - model.Decay)
 			x.when = now + m.Get(index, i) / model.Speed
-			score = append(score, x)			
+			score = append(score, x)
+			if (depth + 1 < model.MaxDepth) {
+				newscore := DBounce( x, i, m, model, depth+1)
+				score = append(score, newscore...)
+			}
 		}
 	}
 	return score
@@ -82,13 +86,18 @@ func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model) []Sc
 
 func main() {
 	m := matrix.MakeDenseMatrix([]float64{
-		0.0,   100.0, 300.0,
-		100.0,   0.0, 200.0,
-		300.0, 200.0,   0.0,
+		0.0,   10.0, 30.0,
+		10.0,   0.0, 20.0,
+		30.0, 20.0,   0.0,
 	},3,3)
 	s := ScoEvent{"\"sine\"", 0.0, 0.1, 1.0}
 	s.PrintSco()
 	model := Model{ 0.9, 1, 300.0 }
-	score := DBounce(s,0,m,model)
+	score := DBounce(s,0,m,model,0)
 	PrintScore(score)	
+	s.when = 5.0
+	model.MaxDepth = 5
+	score = DBounce(s,0,m,model,0)
+	PrintScore(score)	
+
 }
