@@ -86,17 +86,19 @@ func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model, dept
 
 func main() {
 	m := matrix.MakeDenseMatrix([]float64{
-		0.0,   10.0, 30.0,
-		10.0,   0.0, 20.0,
-		30.0, 20.0,   0.0,
-	},3,3)
+		0.0,   100.0, 300.0, 1000.0,
+		100.0,   0.0, 200.0, 2000.0,
+		300.0, 200.0,   0.0, 1000.0,
+		1000.0, 2000.0,1000.0, 0.0,
+	},4,4)
 	s := ScoEvent{"\"sine\"", 0.0, 0.1, 1.0}
 	s.PrintSco()
-	model := Model{ 0.9, 1, 300.0 }
+	model := Model{ 0.9, 1, 5000.0 }
 	score := DBounce(s,0,m,model,0)
-	PrintScore(score)	
+	PrintScore(score)
 	s.when = 5.0
 	model.MaxDepth = 5
+	s.PrintSco()
 	score = DBounce(s,0,m,model,0)
 	PrintScore(score)	
 
