@@ -22,4 +22,5 @@ play:
 
 sine:
 	go run idea.go >sine.sco
-	csound -o what.wav sine.orc sine.sco^C
+	csound -o what.wav sine.orc sine.sco
+	mplayer what.wav

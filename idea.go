@@ -65,15 +65,16 @@ func reflectorTest() {
 	PrintScore(score)
 }
 
-func Bounce(proto ScoEvent, reflectors []Reflector, model Model) []ScoEvent {
+func DBounce(proto ScoEvent, index int, m *matrix.DenseMatrix, model Model) []ScoEvent {
 	now := proto.when
+	rows := m.Rows()
 	score := make([]ScoEvent, 0)
-	for _, reflector := range reflectors {
-		if ( reflector.Angle > -90.0 && reflector.Angle < 90.0) {
+	for i := 0; i < rows; i++ {
+		if (i!=index) {
 			x := proto
-			x.loud = x.loud * (1.0 - math.Abs(reflector.Angle)/90.0) * (1 - model.Decay)
-			x.when = now + reflector.Distance / model.Speed
-			score = append(score, x)
+			x.loud = x.loud * (1 - model.Decay)
+			x.when = now + m.Get(index, i) / model.Speed
+			score = append(score, x)			
 		}
 	}
 	return score
@@ -85,6 +86,9 @@ func main() {
 		100.0,   0.0, 200.0,
 		300.0, 200.0,   0.0,
 	},3,3)
-	fmt.Print("%v",m)
-	
+	s := ScoEvent{"\"sine\"", 0.0, 0.1, 1.0}
+	s.PrintSco()
+	model := Model{ 0.9, 1, 300.0 }
+	score := DBounce(s,0,m,model)
+	PrintScore(score)	
 }
