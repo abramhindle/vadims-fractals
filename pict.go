@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"math"
 	"os"
 	"fmt"
@@ -96,16 +97,21 @@ func DBounce(proto ScoEvent, distance float64, proportion float64, model Model) 
 
 
 func main() {      
-	last := 451
-	size_of_node := 1.00
-	speed_through_material := 300.0 // quartz
-	model := Model{ 0.9, 1, speed_through_material / size_of_node , 6}
-	for imagi := 0; imagi <= last; imagi++ {
+	last := flag.Int("last", 451, "n frames")
+	size_of_node := flag.Float64("size",10.00,"size of node") // huge
+	speed_through_material := flag.Float64("speed",5800.0,"speed through material") // quartz
+	decay := flag.Float64("decay",0.5,"How much energy each reflection takes")
+	maxreflect := flag.Int("reflects",3,"How many reflects to expect -- sort of loudness")
+	seconds := flag.Float64("seconds",7.0,"How many seconds long")
+	flag.Parse()
+
+	model := Model{ *decay, 1, *speed_through_material / *size_of_node , *maxreflect}
+	for imagi := 0; imagi <= *last; imagi++ {
 		filename := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
 		img := LoadPNG(filename)
 		hist := Histogram(img)
 		//fmt.Printf("%v\n",hist)
-		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*9.0, 0.05, 0.95, 440 - 24.69*float64(imagi)/452.0}
+		s := ScoEvent{"\"sine\"", float64(imagi)/float64(*last+1.0)*(*seconds), 0.05, 0.95, 440 - 24.69*float64(imagi)/452.0}
 		//s.PrintSco()		
 
 		for i := 0 ;i < len(hist) - 1; i++ {
