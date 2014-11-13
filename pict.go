@@ -14,10 +14,11 @@ type ScoEvent struct {
 	when float64
 	dur  float64
 	loud float64
+	pitch float64
 }
 
 func (e ScoEvent) PrintSco() {
-	fmt.Printf("i%s %f %f %f\n", e.instr, e.when, e.dur, e.loud)
+	fmt.Printf("i%s %f %f %f %f\n", e.instr, e.when, e.dur, e.loud, e.pitch)
 }
 
 func CsoundIt(instr string, when float64, loud float64) {
@@ -95,15 +96,18 @@ func DBounce(proto ScoEvent, distance float64, proportion float64, model Model) 
 
 
 func main() {      
-	last := 229
+	last := 316
+	size_of_node := 10.00
+	speed_through_material := 5800.0 // quartz
+	model := Model{ 0.7, 1, speed_through_material / size_of_node , 5}
 	for imagi := 0; imagi <= last; imagi++ {
 		filename := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
 		img := LoadPNG(filename)
 		hist := Histogram(img)
 		//fmt.Printf("%v\n",hist)
-		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*10.0, 0.1, 1.0}
-		//s.PrintSco()
-		model := Model{ 0.9, 1, 1000.0, 5}
+		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*10.0, 0.2, 0.95, 1800.0 - 400.0*float64(imagi)/452.0}
+		//s.PrintSco()		
+
 		for i := 0 ;i < len(hist) - 1; i++ {
 			ss := DBounce(s, 0.1+float64(i), hist[i], model)
 			ss.PrintSco()

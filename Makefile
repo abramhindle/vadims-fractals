@@ -32,3 +32,5 @@ pict.wav: pict.sco
 pict: pict.wav
 	mplayer 50.mov --audiofile=pict.wav
 
+inverse.mp4: pict.wav
+	avconv -framerate 45.2  -i pov/50povs/%04d.png -i pict.wav  -c:v libx264 inverse.mp4
