@@ -9,9 +9,9 @@ global_settings { assumed_gamma 2.2 }
 }
 
 camera {
-   location  <250, 250, 250>
+   location  <25, 25, 25>
    direction <0, 0, 0.5>
-   look_at   <250, 250, 251>
+   look_at   <25, 25, 251>
 }
 
 merge {

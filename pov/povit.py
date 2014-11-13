@@ -4,7 +4,7 @@ pov = file("tmpl.pov").read()
 sphere = file("sphere.pov").read()
 povt = Template(pov)
 spheret = Template(sphere)
-lines = file("500.txt").readlines()
+lines = file("50.txt").readlines()
 out = []
 for line in lines:
     line = line.strip()
@@ -13,14 +13,14 @@ for line in lines:
 
 pd = dict(spheres="")
 for i in xrange(0,len(out)):
-    fname = "povs/{:06}.pov".format(i)
+    fname = "50povs/{:04}.pov".format(i)
     nsphere = out[i]
     x,y,z = nsphere[1],nsphere[2],nsphere[3]
     pd["lx"] = str(x)
     pd["ly"] = str(y)
     pd["lz"] = str(z)
     pd["spheres"] += spheret.substitute({"x":x,"y":y,"z":z})
-    if i%30000 == 0:
+    if i%1 == 0:
         f = file(fname,"w")
         f.write(povt.substitute(pd))
         f.close()
