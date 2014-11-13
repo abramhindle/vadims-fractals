@@ -24,3 +24,8 @@ sine:
 	go run idea.go >sine.sco
 	csound -o what.wav sine.orc sine.sco
 	mplayer what.wav
+
+pict:
+	go run pict.go >pict.sco
+	csound -o pict.wav sine.orc pict.sco
+	mplayer pict.wav
