@@ -95,14 +95,18 @@ func DBounce(proto ScoEvent, distance float64, proportion float64, model Model) 
 
 
 func main() {      
-	img := LoadPNG("pov/50povs/0001.png")
-	hist := Histogram(img)
-	//fmt.Printf("%v\n",hist)
-	s := ScoEvent{"\"sine\"", 0.0, 0.1, 1.0}
-	s.PrintSco()
-	model := Model{ 0.9, 1, 1000.0, 5}
-	for i := 0 ;i < len(hist) - 1; i++ {
-		ss := DBounce(s, 0.1+float64(i), hist[i], model)
-		ss.PrintSco()
+	last := 229
+	for imagi := 0; imagi <= last; imagi++ {
+		filename := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
+		img := LoadPNG(filename)
+		hist := Histogram(img)
+		//fmt.Printf("%v\n",hist)
+		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*10.0, 0.1, 1.0}
+		//s.PrintSco()
+		model := Model{ 0.9, 1, 1000.0, 5}
+		for i := 0 ;i < len(hist) - 1; i++ {
+			ss := DBounce(s, 0.1+float64(i), hist[i], model)
+			ss.PrintSco()
+		}
 	}
 }

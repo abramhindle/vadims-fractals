@@ -25,7 +25,10 @@ sine:
 	csound -o what.wav sine.orc sine.sco
 	mplayer what.wav
 
-pict:
+pict.sco: pict.go
 	go run pict.go >pict.sco
+pict.wav: pict.sco
 	csound -o pict.wav sine.orc pict.sco
-	mplayer pict.wav
+pict: pict.wav
+	mplayer 50.mov --audiofile=pict.wav
+
