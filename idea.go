@@ -101,5 +101,9 @@ func main() {
 	s.PrintSco()
 	score = DBounce(s,0,m,model,0)
 	PrintScore(score)	
+	/* [ ] Load 500.txt
+           [ ] Build shortest path matrix (last one should work)
+               or distance matrix, or whatever */
+            
 
 }
