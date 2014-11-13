@@ -31,6 +31,8 @@ pict.wav: pict.sco
 	csound -o pict.wav sine.orc pict.sco
 pict: pict.wav
 	mplayer 50.mov --audiofile=pict.wav
+50pict.mp4: pict.wav
+	avconv  -i 50.mov -i pict.wav  -c:v libx264 50pict.mp4
 
 inverse.mp4: pict.wav
 	avconv -framerate 45.2  -i pov/50povs/%04d.png -i pict.wav  -c:v libx264 inverse.mp4

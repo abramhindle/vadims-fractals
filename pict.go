@@ -96,16 +96,16 @@ func DBounce(proto ScoEvent, distance float64, proportion float64, model Model) 
 
 
 func main() {      
-	last := 316
-	size_of_node := 10.00
-	speed_through_material := 5800.0 // quartz
-	model := Model{ 0.7, 1, speed_through_material / size_of_node , 5}
+	last := 451
+	size_of_node := 1.00
+	speed_through_material := 300.0 // quartz
+	model := Model{ 0.9, 1, speed_through_material / size_of_node , 6}
 	for imagi := 0; imagi <= last; imagi++ {
 		filename := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
 		img := LoadPNG(filename)
 		hist := Histogram(img)
 		//fmt.Printf("%v\n",hist)
-		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*10.0, 0.2, 0.95, 1800.0 - 400.0*float64(imagi)/452.0}
+		s := ScoEvent{"\"sine\"", float64(imagi)/452.0*9.0, 0.05, 0.95, 440 - 24.69*float64(imagi)/452.0}
 		//s.PrintSco()		
 
 		for i := 0 ;i < len(hist) - 1; i++ {
