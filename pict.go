@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/png"
 	"image/color"
+	"github.com/youpy/go-wav"
 )
 
 type ScoEvent struct {
@@ -85,6 +86,29 @@ func Histogram(img image.Image) []float64 {
 	return hist
 }
 
+func HistToSamples(hist []float64, sampleDist int) []wav.Sample{
+	histlen := len(hist) - 1
+	n := histlen + (histlen - 1)*sampleDist
+	samples := make([]wav.Sample,n)
+	for i := 0; i < histlen; i++ {
+		value := int(32000 * hist[i])
+		sample := wav.Sample{[2]int{value,0}}
+		samples[i*(sampleDist+1)] = sample
+	}
+	return samples
+}
+
+func HistToWav(hist []float64, sampleDist int, filename string) {
+	samples := HistToSamples(hist, sampleDist)
+	f, err := os.Create(filename)
+	defer func() {
+		check(f.Close())
+	}()
+	check(err)
+	wavwriter := wav.NewWriter(f, uint32(len(samples)), 1, 44100, 16)
+	check(wavwriter.WriteSamples(samples))
+}
+
 func DBounce(proto ScoEvent, distance float64, proportion float64, model Model) ScoEvent {
 	now := proto.when
 	loudmodifier := float64(model.MaxReflects)/math.Log(1.0/proportion)
@@ -107,15 +131,25 @@ func main() {
 
 	model := Model{ *decay, 1, *speed_through_material / *size_of_node , *maxreflect}
 	for imagi := 0; imagi <= *last; imagi++ {
-		filename := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
+		filename    := fmt.Sprintf("pov/50povs/%04d.png",imagi)		
+
 		img := LoadPNG(filename)
 		hist := Histogram(img)
+
+		wavfilename := fmt.Sprintf("convs/%04d-%f-%f.wav",imagi,*size_of_node,*speed_through_material)		
+		sampleDist := int(44100.0 * (*size_of_node)/(*speed_through_material))
+		if (sampleDist < 1) {
+			sampleDist = 1
+		}
+		if _, err := os.Stat(wavfilename); os.IsNotExist(err) {
+			HistToWav(hist, sampleDist,wavfilename)
+		}
 		//fmt.Printf("%v\n",hist)
 		s := ScoEvent{"\"sine\"", float64(imagi)/float64(*last+1.0)*(*seconds), 0.05, 0.95, 440 - 24.69*float64(imagi)/452.0}
 		//s.PrintSco()		
 
 		for i := 0 ;i < len(hist) - 1; i++ {
-			ss := DBounce(s, 0.1+float64(i), hist[i], model)
+			ss := DBounce(s, 0.1+(*size_of_node)*float64(i), hist[i], model)
 			ss.PrintSco()
 		}
 	}
